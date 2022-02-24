@@ -14,6 +14,7 @@ function AssemblyLine(props:{
         Array(props.stages.length).fill([])
     );
 
+    // add a new task
     function addTask(task:string){
         // when new task comes, add it to the top of first stage
         let firstStageTasks = assemblyData[0];
@@ -23,6 +24,39 @@ function AssemblyLine(props:{
         setAssemblyData(newAssemblyData);
     }
 
+    // move task to next stage
+    function moveToNextStage(stageIndex:number, taskIndex:number){
+        // remove the task from current stage
+        let currentStageTasks = assemblyData[stageIndex];
+        let task = currentStageTasks[taskIndex];
+        let newCurrentStageTasks = currentStageTasks.filter((task, index) => {
+            return index != taskIndex
+        });
+        let newAssemblyData;
+        if((stageIndex + 1) === props.stages.length) {
+            // if it is the last stage, only update the last stage
+            assemblyData.pop();
+            newAssemblyData = [...assemblyData, newCurrentStageTasks];
+        }else{
+            // if it is not in the last stage, update both the current stage and next stage
+            let newNextStageTasks = [task, ...assemblyData[stageIndex + 1]];
+            newAssemblyData = assemblyData.map((stageTasks:string[], index) => {
+                if(index === stageIndex) {
+                    return newCurrentStageTasks;
+                }else if(index === (stageIndex + 1)) {
+                    return newNextStageTasks;
+                }else{
+                    return stageTasks;
+                }
+            });
+        }
+        setAssemblyData(newAssemblyData);
+    }
+
+    // move task to previous stage
+    function moveToPreviousStage(stageIndex:number, taskIndex:number){
+
+    }
     return(
         <div className={style.AssemblyLine}>
             <Container>
@@ -37,7 +71,12 @@ function AssemblyLine(props:{
                 <Row>
                     {props.stages.map((stage:string, index:number) =>
                         <Col key={index}>
-                            <Stage name={stage} tasks={assemblyData[index]}/>
+                            <Stage name={stage}
+                                   tasks={assemblyData[index]}
+                                   stageIndex={index}
+                                   moveToNextStage={moveToNextStage}
+                                   moveToPreviousStage={moveToPreviousStage}
+                            />
                         </Col>
                     )
 
