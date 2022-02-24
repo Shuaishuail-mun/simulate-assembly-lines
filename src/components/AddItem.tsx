@@ -7,7 +7,9 @@ function AddItem(props:{
 
     function handleKeyPress(event:React.KeyboardEvent){
         if(event.key === 'Enter') {
-            props.addTask((event.target as HTMLInputElement).value);
+            let input = event.target as HTMLInputElement;
+            props.addTask(input.value);
+            input.value = '';
         }
     }
 
