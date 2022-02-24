@@ -26,12 +26,12 @@ function Stage(props:{
             <h4>{props.name}</h4>
             {props.tasks.map((task, index) =>
                 <h5 key={index}>
-                    <Button
-                        variant='success'
+                    <button
+                        type="button" className="btn btn-success"
                         onClick={(event) => handleClick(event, index)}
                         onContextMenu={(event) => handleContextMenu(event, index)}>
                         {task}
-                    </Button>
+                    </button>
                 </h5>
             )}
         </>
