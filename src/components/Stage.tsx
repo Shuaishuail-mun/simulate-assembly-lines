@@ -10,13 +10,16 @@ function Stage(props:{
 }){
 
     function handleClick(event: React.MouseEvent, taskIndex:number){
-        if(event.type === 'click') {
-            // if it is a left-click, move this task to the top of next stage
-            props.moveToNextStage(props.stageIndex, taskIndex);
-        }else if(event.type === 'contextmenu') {
-            // if it is a right-click, move this task to the bottom of previous stage
-            props.moveToPreviousStage(props.stageIndex, taskIndex);
-        }
+        // stop default action
+        event.preventDefault();
+        // if it is a left-click, move this task to the top of next stage
+        props.moveToNextStage(props.stageIndex, taskIndex);
+    }
+    function handleContextMenu(event: React.MouseEvent, taskIndex:number){
+        // stop default action
+        event.preventDefault();
+        // if it is a right-click, move this task to the bottom of previous stage
+        props.moveToPreviousStage(props.stageIndex, taskIndex);
     }
     return(
         <>
@@ -25,7 +28,8 @@ function Stage(props:{
                 <h5 key={index}>
                     <Button
                         variant='success'
-                        onClick={(event) => handleClick(event, index)}>
+                        onClick={(event) => handleClick(event, index)}
+                        onContextMenu={(event) => handleContextMenu(event, index)}>
                         {task}
                     </Button>
                 </h5>

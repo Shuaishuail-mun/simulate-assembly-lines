@@ -55,8 +55,33 @@ function AssemblyLine(props:{
 
     // move task to previous stage
     function moveToPreviousStage(stageIndex:number, taskIndex:number){
-
+        // remove the task from current stage
+        let currentStageTasks = assemblyData[stageIndex];
+        let task = currentStageTasks[taskIndex];
+        let newCurrentStageTasks = currentStageTasks.filter((task, index) => {
+            return index != taskIndex
+        });
+        let newAssemblyData;
+        if(stageIndex === 0) {
+            // if it is the first stage, only update the first stage
+            assemblyData.shift();
+            newAssemblyData = [newCurrentStageTasks, ...assemblyData];
+        }else{
+            // if it is not in the first stage, update both the current stage and previous stage
+            let newPreviousStageTasks = [...assemblyData[stageIndex - 1], task];
+            newAssemblyData = assemblyData.map((stageTasks:string[], index) => {
+                if(index === stageIndex) {
+                    return newCurrentStageTasks;
+                }else if(index === (stageIndex - 1)) {
+                    return newPreviousStageTasks;
+                }else{
+                    return stageTasks;
+                }
+            });
+        }
+        setAssemblyData(newAssemblyData);
     }
+
     return(
         <div className={style.AssemblyLine}>
             <Container>
@@ -78,9 +103,7 @@ function AssemblyLine(props:{
                                    moveToPreviousStage={moveToPreviousStage}
                             />
                         </Col>
-                    )
-
-                    }
+                    )}
                 </Row>
             </Container>
         </div>
